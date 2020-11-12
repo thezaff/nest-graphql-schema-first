@@ -1,29 +1,34 @@
 import { Resolver, Query, Args, Mutation } from '@nestjs/graphql';
-import { Cat } from './models/cat.model';
+// import { Cat } from './models/cat.model.tsasdf';
 import { CatService } from './cat.service';
 import { CatDto } from './dto/cat.dto';
 import { CatInput } from './models/cat-input.model';
 
-@Resolver(of => Cat)
+@Resolver('Cat')
 export class CatResolver {
   constructor(private readonly catService: CatService) {}
 
-  @Query(returns => Cat)
+  @Query('findOne')
   async findOne(@Args('id') id: string): Promise<CatDto> {
+    const res = await this.catService.findOne(id);
+    console.log('⚡⚡⚡: -------------------------------------------');
+    console.log('⚡⚡⚡: CatResolver -> constructor -> res', res);
+    console.log('⚡⚡⚡: -------------------------------------------');
+    
     return this.catService.findOne(id);
   }
 
-  @Query(returns => [Cat])
+  @Query('findAll')
   findAll(): Promise<CatDto[]> {
     return this.catService.findAll();
   }
 
-  @Mutation(returns => Cat)
+  @Mutation('create')
   create(@Args('input') input: CatInput): Promise<CatDto> {
     return this.catService.create(input);
   }
 
-  @Mutation(returns => Cat)
+  @Mutation('update')
   update(
     @Args('id') id: string,
     @Args('input') input: CatInput,
@@ -31,7 +36,7 @@ export class CatResolver {
     return this.catService.update(id, input);
   }
 
-  @Mutation(returns => Cat)
+  @Mutation('remove')
   remove(@Args('id') id: string): Promise<CatDto> {
     return this.catService.delete(id);
   }
